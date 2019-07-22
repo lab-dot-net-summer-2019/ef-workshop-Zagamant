@@ -15,7 +15,7 @@ namespace SamuraiApp.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.2.3-servicing-35854")
+                .HasAnnotation("ProductVersion", "2.2.6-servicing-10079")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -38,15 +38,13 @@ namespace SamuraiApp.Data.Migrations
 
             modelBuilder.Entity("SamuraiApp.Domain.Quote", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                    b.Property<int>("Id");
 
                     b.Property<int>("SamuraiId");
 
                     b.Property<string>("Text");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id", "SamuraiId");
 
                     b.HasIndex("SamuraiId");
 
@@ -60,8 +58,6 @@ namespace SamuraiApp.Data.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Name");
-
-                    b.Property<string>("Surname");
 
                     b.HasKey("Id");
 
@@ -80,7 +76,7 @@ namespace SamuraiApp.Data.Migrations
 
                     b.HasIndex("SamuraiId");
 
-                    b.ToTable("SamuraiBattle");
+                    b.ToTable("SamuraiBattles");
                 });
 
             modelBuilder.Entity("SamuraiApp.Domain.SecretIdentity", b =>
@@ -98,7 +94,7 @@ namespace SamuraiApp.Data.Migrations
                     b.HasIndex("SamuraiId")
                         .IsUnique();
 
-                    b.ToTable("SecretIdentity");
+                    b.ToTable("SecretIdentities");
                 });
 
             modelBuilder.Entity("SamuraiApp.Domain.Quote", b =>
@@ -124,7 +120,7 @@ namespace SamuraiApp.Data.Migrations
 
             modelBuilder.Entity("SamuraiApp.Domain.SecretIdentity", b =>
                 {
-                    b.HasOne("SamuraiApp.Domain.Samurai")
+                    b.HasOne("SamuraiApp.Domain.Samurai", "Samurai")
                         .WithOne("SecretIdentity")
                         .HasForeignKey("SamuraiApp.Domain.SecretIdentity", "SamuraiId")
                         .OnDelete(DeleteBehavior.Cascade);

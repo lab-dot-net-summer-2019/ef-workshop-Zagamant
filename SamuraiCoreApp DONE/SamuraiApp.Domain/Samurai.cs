@@ -6,8 +6,9 @@ namespace SamuraiApp.Domain
     {
         public Samurai()
         {
-            //SecretIdentity = new SecretIdentity();
+            SecretIdentity = new SecretIdentity();
             Quotes = new List<Quote>();
+            SamuraiBattles = new List<SamuraiBattle>();
         }
         public int Id { get; set; }
         public string Name { get; set; }

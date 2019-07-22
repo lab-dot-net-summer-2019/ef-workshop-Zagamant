@@ -35,6 +35,10 @@ namespace WebApp.Controllers
 
             //TODO
             //Get single Samurai, including quotes and SecretIdentity with id = id (query param)
+            var samurai = _context.Samurais
+                .Include(s => s.Quotes)
+                .Include(s => s.SecretIdentity)
+                .FirstOrDefault(s => s.Id == id);
 
             if (samurai == null)
             {
@@ -60,6 +64,8 @@ namespace WebApp.Controllers
             {
                 //TODO
                 //Add samurai
+                await _context.Samurais.AddAsync(samurai).ConfigureAwait(false);
+                await _context.SaveChangesAsync().ConfigureAwait(false);
                 return RedirectToAction(nameof(Index));
             }
             return View(samurai);
@@ -75,6 +81,11 @@ namespace WebApp.Controllers
 
             //TODO
             //Get single Samurai with quotes and SecretIdentity with id = id (query param)
+            var samurai = await _context.Samurais
+                .Include(s => s.Quotes)
+                .Include(s => s.SecretIdentity)
+                .FirstOrDefaultAsync(s => s.Id == id)
+                .ConfigureAwait(false);
 
             if (samurai == null) {
                 return NotFound();
@@ -83,8 +94,8 @@ namespace WebApp.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        //    public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] Samurai samurai)
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] Samurai samurai)
         public async Task<IActionResult> Edit(int id, Samurai samurai)
         {
             if (id != samurai.Id)
@@ -98,6 +109,18 @@ namespace WebApp.Controllers
                 {
                     //TODO
                     //Update samurai 
+                    var samuraiOld = await _context.Samurais.FirstOrDefaultAsync(s => s.Id == id);
+                    var secretIdentity = _context.SecretIdentities.FirstOrDefault(x => x.SamuraiId == samurai.Id);
+                    if (secretIdentity == null)
+                    {
+                        await _context.SecretIdentities.AddAsync(samurai.SecretIdentity).ConfigureAwait(false);
+                    }
+                    else
+                    {
+                        secretIdentity.RealName = samurai.SecretIdentity.RealName;
+                    }
+                    samuraiOld.Name = samurai.Name;
+                    await _context.SaveChangesAsync().ConfigureAwait(false);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -110,6 +133,7 @@ namespace WebApp.Controllers
                         throw;
                     }
                 }
+
                 return RedirectToAction(nameof(Index));
             }
             return View(samurai);
@@ -125,6 +149,7 @@ namespace WebApp.Controllers
 
             //TODO
             //Get single Samurai with id = id (query param)
+            var samurai = await _context.Samurais.FirstOrDefaultAsync(s => s.Id == id);
 
             if (samurai == null) {
                 return NotFound();
@@ -141,6 +166,13 @@ namespace WebApp.Controllers
             //TODO
             //Get single Samurai with id = id (query param)
             //and remove
+            var samurai = _context.Samurais.FirstOrDefault(s => s.Id == id);
+            if (samurai != null)
+            {
+                _context.Samurais.Remove(samurai);
+            }
+
+            await _context.SaveChangesAsync();
 
             return RedirectToAction(nameof(Index));
         }
